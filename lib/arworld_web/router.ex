@@ -26,5 +26,9 @@ defmodule ArworldWeb.Router do
 
     get "/synchronise", SyncController, :synchronise
 
+    post "/create", SyncController, :create
+
+    put "/update", SyncController, :update
+
   end
 end

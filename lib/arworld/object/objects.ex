@@ -31,6 +31,7 @@ defmodule Arworld.Object.Objects do
     |> cast_coordinates()        # remember to cast the coordinates!
   end
 
+
   def cast_coordinates(changeset) do
     lat = get_change(changeset, :lat)
     lng = get_change(changeset, :lng)
@@ -51,7 +52,14 @@ defmodule Arworld.Object.Objects do
 
         {:ok, results} ->
     end
-    # Repo.query(query)
+  end
+
+  def get_object!(id), do: Repo.get!(Objects, id)
+
+  def update_object(%Objects{} = object, object_params) do
+    object
+    |> changeset(object_params)
+    |> Repo.update()
   end
 
 end
