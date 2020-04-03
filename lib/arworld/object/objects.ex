@@ -39,6 +39,21 @@ defmodule Arworld.Object.Objects do
     changeset |> put_change(:coordinates, geo)
   end
 
+  def get_all_objects() do
+    query = ["SELECT * FROM objects;"]
+    #|> Enum.join(" ") will need this for multiple line querying later
+
+    case Repo.query(query)do
+      {:ok, %Postgrex.Result{columns: cols, rows: rows}} ->
+        results =
+          Enum.map(rows, fn row ->
+            Repo.load(Objects, {cols, row})
+          end)
+
+        {:ok, results} ->
+    end
+  end
+
   def get_objects_in_radius() do
     query = ["SELECT * FROM objects;"]
     #|> Enum.join(" ") will need this for multiple line querying later
@@ -60,6 +75,17 @@ defmodule Arworld.Object.Objects do
     object
     |> changeset(object_params)
     |> Repo.update()
+  end
+
+  def remove_object(%Objects{} = object, object_params) do
+    object
+    |> changeset(object_params)
+    |> Repo.delete()
+  end
+
+  def create_object(changeset_input) do
+    # to be put into objects file
+    Repo.insert (changeset_input)
   end
 
 end

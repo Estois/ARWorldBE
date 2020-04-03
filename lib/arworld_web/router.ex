@@ -13,12 +13,12 @@ defmodule ArworldWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/", ArworldWeb do
-  #   pipe_through :browser
-  #
-  #   get "/", PageController, :index
-  #
-  # end
+  scope "/", ArworldWeb do
+    pipe_through :browser
+
+    get "/", PageController, :index
+
+  end
 
   # Other scopes may use custom stacks.
   scope "/api", ArworldWeb do

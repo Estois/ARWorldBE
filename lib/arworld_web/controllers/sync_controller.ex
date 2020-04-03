@@ -4,9 +4,24 @@ defmodule ArworldWeb.SyncController do
   alias Arworld.Object.Objects
   alias Arworld.Repo
 
-  def synchronise(conn, %{"coord" => coord} = params) do
-    objects = Objects.get_objects_in_radius()
+  def index(conn, _params) do
+    objects = Objects.get_all_objects()
     render(conn, "index.json", objects: objects)
+  end
+
+  # def synchronise(conn, %{"coord" => coord} = params) do
+  #   objects = Objects.get_objects_in_radius()
+  #   render(conn, "index.json", objects: objects)
+  # end
+
+  def synchronise(conn, params) do
+    case Map.has_key?(params, "coord") do
+      true ->
+        objects = Objects.get_objects_in_radius()
+        render(conn, "index.json", objects: objects)
+      false ->
+        render(conn, "error.json")
+    end
   end
 
   def create(conn, %{"object" => object_params}) do
@@ -24,12 +39,19 @@ defmodule ArworldWeb.SyncController do
     # }
     # to be put into objects file
     changeset = Objects.changeset(%Objects{}, object_params)
-    IO.inspect(changeset)
-    case Repo.insert (changeset) do
-      {:ok, object} ->
-        json conn |> put_status(:created), %{success: ["object created"]}
-      {:error, _changeset} ->
-        json conn |> put_status(:bad_request), %{errors: ["unable to create object"] }
+    # IO.inspect(changeset)
+    # case Repo.insert (changeset) do
+    #   {:ok, object} ->
+    #     json conn |> put_status(:created), %{success: ["object created"]}
+    #   {:error, _changeset} ->
+    #     json conn |> put_status(:bad_request), %{errors: ["unable to create object"] }
+    # end
+
+    case Objects.create_object(changeset) do
+        {:ok, object} ->
+          json conn |> put_status(:created), %{success: ["object created"]}
+        {:error, _changeset} ->
+          json conn |> put_status(:bad_request), %{errors: ["unable to create object"] }
     end
 
   end

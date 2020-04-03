@@ -25,4 +25,8 @@ defmodule ArworldWeb.SyncView do
     }
   end
 
+  def render("error.json", _params) do
+    "Error procesing your request, did you miss a parameter?"
+  end
+
 end
