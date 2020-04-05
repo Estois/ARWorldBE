@@ -30,5 +30,7 @@ defmodule ArworldWeb.Router do
 
     put "/update", SyncController, :update
 
+    put "/delete", SyncController, :delete
+
   end
 end

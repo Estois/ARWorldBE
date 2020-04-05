@@ -37,7 +37,7 @@ defmodule ArworldWeb.ObjectsController do
     objects = Object.get_objects!(id)
 
     with {:ok, %Objects{}} <- Object.delete_objects(objects) do
-      send_resp(conn, :no_content, "")
+      render(conn, "show.json", objects: objects)
     end
   end
 end

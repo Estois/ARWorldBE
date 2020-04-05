@@ -41,7 +41,6 @@ defmodule Arworld.Object.Objects do
 
   def get_all_objects() do
     query = ["SELECT * FROM objects;"]
-    #|> Enum.join(" ") will need this for multiple line querying later
 
     case Repo.query(query)do
       {:ok, %Postgrex.Result{columns: cols, rows: rows}} ->
@@ -54,9 +53,12 @@ defmodule Arworld.Object.Objects do
     end
   end
 
-  def get_objects_in_radius() do
-    query = ["SELECT * FROM objects;"]
-    #|> Enum.join(" ") will need this for multiple line querying later
+  def get_objects_in_radius(coord) do
+    lat = Map.get(coord, "lat")
+    lng = Map.get(coord, "lng")
+    query = ["SELECT *
+              FROM objects
+              WHERE ST_DWithin(objects, ST_MakePoint("<>lng<>","<>lat<>")) <= radius_mi * 16.0934"]
 
     case Repo.query(query)do
       {:ok, %Postgrex.Result{columns: cols, rows: rows}} ->
@@ -69,22 +71,21 @@ defmodule Arworld.Object.Objects do
     end
   end
 
-  def get_object!(id), do: Repo.get!(Objects, id)
+  def get_objects!(id), do: Repo.get!(Objects, id)
 
-  def update_object(%Objects{} = object, object_params) do
+  def update_objects(%Objects{} = object, object_params) do
     object
     |> changeset(object_params)
     |> Repo.update()
   end
 
-  def remove_object(%Objects{} = object, object_params) do
+  def delete_objects(%Objects{} = object, object_params) do
     object
     |> changeset(object_params)
     |> Repo.delete()
   end
 
-  def create_object(changeset_input) do
-    # to be put into objects file
+  def create_objects(changeset_input) do
     Repo.insert (changeset_input)
   end
 

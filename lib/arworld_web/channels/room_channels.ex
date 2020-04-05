@@ -12,7 +12,7 @@ defmodule ArworldWeb.RoomChannel do
     broadcast!(socket, "new_msg", %{body: body})
     {:noreply, socket}
     instruction = Map.get(body, "instruction")
-    object_params = Map.get(body, "object_params")
+    object_params = Map.get(body, "object")
 
     case instruction do
       # create object
